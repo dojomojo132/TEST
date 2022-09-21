@@ -1,0 +1,27 @@
+import pymysql.cursors
+
+
+user_login = input("Login: ")
+password = input("Password: ")
+
+connection = pymysql.connect(host='192.168.88.42',
+                             user='root',
+                             password='111',
+                             db='waiters',
+                             cursorclass=pymysql.cursors.DictCursor)
+print("connect successful!!")
+try:
+    with connection.cursor() as cursor:
+
+        cursor.execute("SELECT password FROM users WHERE login = %s AND password = %s", [user_login, password])
+
+        if cursor.fetchone() is None:
+            print("Такой логин не существует или пароль неверный")
+        else:
+            print("Вы зашли под учетной записью ", user_login)
+            # exem_user(login)
+
+finally:
+    cursor.close()
+    connection.close()
+
